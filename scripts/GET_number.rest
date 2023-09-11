@@ -1,5 +1,4 @@
 @host = http://127.0.0.1:3000
-@start = 0
-@end = 100
+
 ### GET a random number between the range
-GET {{host}}/?start={{start}}&end={{end}}
+GET {{host}}/ping
