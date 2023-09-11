@@ -11,8 +11,9 @@ async fn main() {
         .init();
 
     let router = controller::init_router();
+    println!("Listening on port 80...");
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 80));
 
     axum::Server::bind(&addr)
         .serve(router.into_make_service())
