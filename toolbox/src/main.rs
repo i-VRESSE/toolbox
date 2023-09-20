@@ -1,20 +1,15 @@
+use axum::routing::post;
 use std::net::SocketAddr;
+use toolbox::make_router;
 
 mod controller;
-mod utils;
 
 #[tokio::main]
 async fn main() {
-    tracing_subscriber::fmt()
-        .with_target(false)
-        .compact()
-        .init();
-
-    let router = controller::init_router();
-    println!("[TOOLBOX] Listening on port 8080...");
-
-    let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
-
+    let port = toolbox::utils::get_port();
+    let router = make_router().route("/rescore", post(controller::haddock3::rescore));
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
+    println!("Listening on port {}...", port);
     axum::Server::bind(&addr)
         .serve(router.into_make_service())
         .await

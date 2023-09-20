@@ -323,22 +323,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "executor"
-version = "0.1.0"
-dependencies = [
- "axum",
- "base64",
- "rand",
- "serde",
- "tempfile",
- "tokio",
- "tower-http",
- "tracing",
- "tracing-subscriber",
- "zip",
-]
-
-[[package]]
 name = "fastrand"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -467,6 +451,15 @@ dependencies = [
  "tokio",
  "tokio-util",
  "tracing",
+]
+
+[[package]]
+name = "haddock3-rescore"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "tokio",
+ "toolbox",
 ]
 
 [[package]]
@@ -1378,14 +1371,17 @@ name = "toolbox"
 version = "0.1.0"
 dependencies = [
  "axum",
+ "base64",
  "rand",
  "reqwest",
  "serde",
  "serde_json",
+ "tempfile",
  "tokio",
  "tower-http",
  "tracing",
  "tracing-subscriber",
+ "zip",
 ]
 
 [[package]]

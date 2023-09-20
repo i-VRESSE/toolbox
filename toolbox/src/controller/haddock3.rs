@@ -1,27 +1,12 @@
 use axum::response::{IntoResponse, Json, Response};
-use core::panic;
 use reqwest::StatusCode;
-use serde::{Deserialize, Serialize};
 use serde_json::json;
-use std::env;
-
-#[derive(Deserialize, Serialize)]
-pub struct RequestBody {
-    payload: String,
-}
-
-#[derive(Serialize)]
-pub struct Message {
-    output: String,
-}
 
 // Redirect the request to `some_tool` endpoint
-pub async fn haddock3_int_rescore(body: axum::extract::Json<RequestBody>) -> Response {
+pub async fn rescore(body: axum::extract::Json<toolbox::RequestBody>) -> Response {
     // Get the endpoint from the environment variable.
-    let endpoint = match env::var("HADDOCK3_INT_RESCORE_ENDPOINT") {
-        Ok(val) => val,
-        Err(_) => panic!("HADDOCK3_INT_RESCORE_ENDPOINT is not set or an error occurred."),
-    };
+    let endpoint = toolbox::utils::get_sys_var("HADDOCK3_INT_RESCORE_ENDPOINT");
+
     // Initialize a client
     let client = reqwest::Client::new();
 
@@ -41,7 +26,7 @@ pub async fn haddock3_int_rescore(body: axum::extract::Json<RequestBody>) -> Res
     // --------------------------------------------------------------------------------
     // Handle the response, check status etc...
     let status = res.status();
-    let message = Message {
+    let message = toolbox::Message {
         output: res.text().await.unwrap(),
     };
 

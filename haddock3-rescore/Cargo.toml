@@ -1,0 +1,9 @@
+[package]
+name = "haddock3-rescore"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+toolbox = { path = "../toolbox" }
+axum = "0.6.1"
+tokio = { version = "1.21.2", features = ["full"] }
