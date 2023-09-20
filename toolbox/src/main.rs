@@ -11,7 +11,7 @@ async fn main() {
         .init();
 
     let router = controller::init_router();
-    println!("Listening on port 8080...");
+    println!("[TOOLBOX] Listening on port 8080...");
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
 

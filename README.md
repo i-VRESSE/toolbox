@@ -1,16 +1,25 @@
 # Analysis Toolbox
 
-## Starting
+Proof-of-concept for a tool that allows users to run analysis tools on a remote server.
+
+## Running
+
+### Gateway
 
 ```bash
-# Gateway
-## Build
-cargo build --bin toolbox --release --target-dir bin/
-## Run
+# Build
+cargo build --bin toolbox --release && mkdir -p bin/ && cp target/release/toolbox bin/
+# Run
+./bin/toolbox
+```
 
-# Build tool
-docker build -f tools/haddock3-int-rescore.Dockerfile . -t haddock3-tool && \
-  docker run -p 9000:9000 --rm haddock3-tool
+### Tool
+
+```bash
+# Build
+docker build  -t haddock3-tool -f tools/wrapped.Dockerfile .
+# Run
+docker run -it -p 9000:9000 --rm haddock3-tool
 ```
 
 ## Components

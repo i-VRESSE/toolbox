@@ -69,6 +69,8 @@ async fn main() {
             .on_response(trace::DefaultOnResponse::new().level(Level::INFO)),
     );
 
+    println!("[EXECUTOR] Listening on port {}...", PORT);
+
     let addr = SocketAddr::from(([0, 0, 0, 0], PORT));
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
