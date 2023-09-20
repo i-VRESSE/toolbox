@@ -1,39 +1,29 @@
-use axum::Json;
-use axum::{routing::get, Router};
-use serde::{Deserialize, Serialize};
+use axum::response::{IntoResponse, Response};
+use axum::{routing::post, Router};
+use serde::Deserialize;
 use std::net::SocketAddr;
 use tower_http::trace::{self, TraceLayer};
 use tracing::Level;
 
-#[derive(Deserialize, Serialize)]
+// ================================================================================
+// These should be configs
+const COMMAND: &str = "haddock3-int_rescore";
+const PORT: u16 = 9000;
+// ================================================================================
+
+#[derive(Deserialize)]
 struct RequestBody {
-    payload: String,
+    payload: String, // base64 encoded zip file.
 }
 
-async fn handle_post(body: axum::extract::Json<RequestBody>) -> String {
-    // The input is a base64 string, encoded from a zip file,
-    //  decode it and extract the contents to a temporary directory.
-    let input = base64::decode(&body.payload).unwrap();
-    let mut archive = zip::ZipArchive::new(std::io::Cursor::new(input)).unwrap();
-    // let temp_dir = tempfile::tempdir().unwrap();
-    let temp_dir = tempfile::Builder::new()
-        .prefix("haddock3")
-        .tempdir()
-        .unwrap();
+// Handle the POST request
+async fn handle_post(body: axum::extract::Json<RequestBody>) -> Response {
+    // Uncompress the payload
+    let _input_data_dir = uncompress_payload(&body.payload).await;
 
-    archive.extract(temp_dir.path()).unwrap();
-
-    // List the contents of the temporary directory.
-    let mut contents = String::new();
-    for entry in std::fs::read_dir(temp_dir.path()).unwrap() {
-        let entry = entry.unwrap();
-        contents.push_str(&format!("{}\n", entry.path().display()));
-    }
-
-    // Run a command called `haddock3` inside this folder
-    //  and return the output.
-    let output = std::process::Command::new("haddock3-int_rescore -r run1-ranairCDR-test -m 2")
-        .current_dir(temp_dir.path())
+    // Run a command inside this folder and return the output.
+    let output = std::process::Command::new(COMMAND)
+        // .current_dir(input_data_dir.path())
         .output()
         .expect("failed to execute process");
 
@@ -44,19 +34,26 @@ async fn handle_post(body: axum::extract::Json<RequestBody>) -> String {
     let stderr = String::from_utf8(output.stderr).unwrap();
 
     // Combine both in a log file
-    format!("{}\n{}", stdout, stderr)
+    format!("{}\n{}", stdout, stderr).into_response()
 }
 
-#[derive(Serialize)]
-pub struct Message {
-    message: String,
-}
+#[allow(deprecated)]
+// Decode and extract the contents of the zip file into a temporary directory.
+async fn uncompress_payload(payload: &String) -> tempfile::TempDir {
+    // Decode the `payload` field from the request body.
+    let input = base64::decode(payload).unwrap();
 
-pub async fn ping() -> Json<Message> {
-    let message = Message {
-        message: "pong".to_string(),
-    };
-    Json(message)
+    // Make a zip archive from the decoded input.
+    let mut archive = zip::ZipArchive::new(std::io::Cursor::new(input)).unwrap();
+
+    // Create a temporary directory
+    let temp_dir = tempfile::Builder::new().tempdir().unwrap();
+
+    // Extract the contents of the zip archive into the temporary directory.
+    archive.extract(temp_dir.path()).unwrap();
+
+    // Return the temporary directory.
+    temp_dir
 }
 
 #[tokio::main]
@@ -66,16 +63,13 @@ async fn main() {
         // .compact()
         .init();
 
-    let app = Router::new()
-        .route("/ping", get(ping))
-        .route("/", get(handle_post).post(handle_post))
-        .layer(
-            TraceLayer::new_for_http()
-                .make_span_with(trace::DefaultMakeSpan::new().level(Level::INFO))
-                .on_response(trace::DefaultOnResponse::new().level(Level::INFO)),
-        );
+    let app = Router::new().route("/", post(handle_post)).layer(
+        TraceLayer::new_for_http()
+            .make_span_with(trace::DefaultMakeSpan::new().level(Level::INFO))
+            .on_response(trace::DefaultOnResponse::new().level(Level::INFO)),
+    );
 
-    let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
+    let addr = SocketAddr::from(([0, 0, 0, 0], PORT));
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await
