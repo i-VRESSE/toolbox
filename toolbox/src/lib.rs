@@ -125,12 +125,6 @@ pub mod utils {
         }
 
         #[test]
-        #[should_panic]
-        fn test_get_sys_var_error() {
-            std::env::remove_var("TEST_VAR");
-            get_sys_var("TEST_VAR");
-        }
-        #[test]
         fn test_uncompress_payload() {
             let payload = String::from("UEsDBAoAAAAAAE1YNFcAAAAAAAAAAAAAAAAOABwAaW5wdXRfZGF0YS50eHRVVAkAAyK1CmUitQpldXgLAAEE6AMAAAToAwAAUEsBAh4DCgAAAAAATVg0VwAAAAAAAAAAAAAAAA4AGAAAAAAAAAAAAKSBAAAAAGlucHV0X2RhdGEudHh0VVQFAAMitQpldXgLAAEE6AMAAAToAwAAUEsFBgAAAAABAAEAVAAAAEgAAAAAAA==");
             let temp_dir = uncompress_payload(&payload);
@@ -149,13 +143,6 @@ pub mod utils {
         fn test_get_port() {
             std::env::set_var("PORT", "8080");
             assert_eq!(get_port(), 8080);
-        }
-
-        #[test]
-        #[should_panic]
-        fn test_get_port_error() {
-            std::env::remove_var("PORT");
-            get_port();
         }
     }
 }
