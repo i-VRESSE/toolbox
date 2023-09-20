@@ -2,11 +2,14 @@
 services:
   toolbox:
     container_name: toolbox
-    image: ci-cd.science.uu.nl/toolbox:v0.1.0
+    build:
+      context: .
+      dockerfile: Dockerfiles/toolbox.Dockerfile
     ports:
       - "8080:8080"
     environment:
       HADDOCK3_INT_RESCORE_ENDPOINT: http://haddock3-rescore:9000
+      PORT: 8080
 
   haddock3-rescore:
     container_name: haddock3-rescore
@@ -15,3 +18,6 @@ services:
       dockerfile: Dockerfiles/haddock3-rescore.Dockerfile
     ports:
       - "9000:9000"
+    environment:
+      PORT: 9000
+      COMMAND: ls

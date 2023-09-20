@@ -3,11 +3,10 @@ FROM rust:latest as build
 
 WORKDIR /src
 
-COPY toolbox .
+COPY . .
 
 RUN cargo clean && \
-  cargo build -vv --release
+  cargo build -vv --release --bin toolbox
 
-EXPOSE 8080
 CMD [ "/src/target/release/toolbox" ]
 #==============================================================================================

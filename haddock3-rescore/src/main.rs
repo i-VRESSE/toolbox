@@ -22,7 +22,7 @@ async fn main() {
     let port = toolbox::utils::get_port();
     let app = toolbox::make_router().route("/", post(handle_post));
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
-    println!("[EXECUTOR] Listening on port {}...", port);
+    println!("Listening on port {}...", port);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await

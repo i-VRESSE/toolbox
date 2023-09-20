@@ -3,9 +3,10 @@
 #==============================================================================================
 FROM rust:latest as build
 WORKDIR /src
-COPY executor .
+COPY . .
 RUN cargo clean && \
-  cargo build -vv --release
+  cargo build -vv --release --bin haddock3-rescore && \
+  mv target/release/haddock3-rescore target/release/executor
 #==============================================================================================
 # Tool installation
 #==============================================================================================
@@ -15,6 +16,5 @@ FROM ci-cd.science.uu.nl/haddock3-rescore:v0.1.0
 #==============================================================================================
 COPY --from=build /src/target/release/executor /usr/local/bin/executor
 
-EXPOSE 9000
 CMD ["executor"]
 #==============================================================================================

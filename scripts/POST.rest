@@ -5,7 +5,7 @@
 
 #==============================================================================
 ### /haddock3_int_rescore [POST]
-POST {{host}}/haddock3_int_rescore
+POST {{host}}/rescore
 Content-Type: application/json
 
 {
