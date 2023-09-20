@@ -1,3 +1,5 @@
+[![test](https://github.com/i-VRESSE/toolbox/actions/workflows/rust.yml/badge.svg)](https://github.com/i-VRESSE/toolbox/actions/workflows/rust.yml)
+
 # Analysis Toolbox
 
 Proof-of-concept for a tool that allows users to run analysis tools on a remote server.
