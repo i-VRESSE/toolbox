@@ -1,0 +1,15 @@
+@host = http://localhost:8080
+
+# Base64 encoded payload
+@payload = UEsDBAoAAAAAAE1YNFcAAAAAAAAAAAAAAAAOABwAaW5wdXRfZGF0YS50eHRVVAkAAyK1CmUitQpldXgLAAEE6AMAAAToAwAAUEsBAh4DCgAAAAAATVg0VwAAAAAAAAAAAAAAAA4AGAAAAAAAAAAAAKSBAAAAAGlucHV0X2RhdGEudHh0VVQFAAMitQpldXgLAAEE6AMAAAToAwAAUEsFBgAAAAABAAEAVAAAAEgAAAAAAA==
+
+#==============================================================================
+# /haddock3_int_rescore [POST]
+#==============================================================================
+### Request
+POST {{host}}/haddock3_int_rescore
+Content-Type: application/json
+
+{
+  "payload": "{{payload}}"
+}
