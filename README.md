@@ -7,19 +7,7 @@ Proof-of-concept for a tool that allows users to run analysis tools on a remote 
 ### Gateway
 
 ```bash
-# Build
-cargo build --bin toolbox --release && mkdir -p bin/ && cp target/release/toolbox bin/
-# Run
-./bin/toolbox
-```
-
-### Tool
-
-```bash
-# Build
-docker build  -t haddock3-tool -f tools/wrapped.Dockerfile .
-# Run
-docker run -it -p 9000:9000 --rm haddock3-tool
+docker compose up
 ```
 
 ## Components
