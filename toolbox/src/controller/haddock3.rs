@@ -1,12 +1,9 @@
 use axum::response::{IntoResponse, Json, Response};
+use core::panic;
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-
-// ================================================================================
-// These should be config
-const HADDOCK3_INT_RESCORE_ENDPOINT: &str = "http://localhost:9000/";
-// ================================================================================
+use std::env;
 
 #[derive(Deserialize, Serialize)]
 pub struct RequestBody {
@@ -20,6 +17,11 @@ pub struct Message {
 
 // Redirect the request to `some_tool` endpoint
 pub async fn haddock3_int_rescore(body: axum::extract::Json<RequestBody>) -> Response {
+    // Get the endpoint from the environment variable.
+    let endpoint = match env::var("HADDOCK3_INT_RESCORE_ENDPOINT") {
+        Ok(val) => val,
+        Err(_) => panic!("HADDOCK3_INT_RESCORE_ENDPOINT is not set or an error occurred."),
+    };
     // Initialize a client
     let client = reqwest::Client::new();
 
@@ -30,7 +32,7 @@ pub async fn haddock3_int_rescore(body: axum::extract::Json<RequestBody>) -> Res
 
     // Post the request to the endpoint
     let res = client
-        .post(HADDOCK3_INT_RESCORE_ENDPOINT)
+        .post(endpoint)
         .json(&request_body)
         .send()
         .await

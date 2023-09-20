@@ -15,5 +15,6 @@ FROM ci-cd.science.uu.nl/haddock3-rescore:v0.1.0
 #==============================================================================================
 COPY --from=build /src/target/release/executor /usr/local/bin/executor
 
-ENTRYPOINT ["executor"]
+EXPOSE 9000
+CMD ["executor"]
 #==============================================================================================
