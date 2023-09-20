@@ -31,7 +31,7 @@ mod tests {
 
     #[test]
     fn test_make_router() {
-        let result = std::panic::catch_unwind(|| make_router());
+        let result = std::panic::catch_unwind(make_router);
         assert!(result.is_ok());
     }
 }
@@ -77,11 +77,11 @@ pub mod utils {
     }
 
     pub fn get_sys_var(var: &str) -> String {
-        let sys_var = match env::var(var) {
+        
+        match env::var(var) {
             Ok(val) => val,
             Err(_) => panic!("{} is not set or an error occurred.", var),
-        };
-        sys_var
+        }
     }
 
     pub fn get_port() -> u16 {
@@ -103,7 +103,7 @@ pub mod utils {
         fn test_run_command() {
             let temp_dir = tempfile::Builder::new().tempdir().unwrap();
             let file_path = temp_dir.path().join("test.txt");
-            let mut file = File::create(&file_path).unwrap();
+            let mut file = File::create(file_path).unwrap();
             writeln!(file, "test").unwrap();
 
             let (stdout, stderr) = run_command("ls", &temp_dir);
